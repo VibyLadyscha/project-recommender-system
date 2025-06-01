@@ -100,21 +100,94 @@ Pada proyek ini saya menggunakan data sekunder yang diunduh dari situs dataset *
    - Setelah dilakukan pengecekan *missing values*, ternyata tidak ada indikasi *missing values* pada dataset user.
    - Setelah dilakukan pengecekan duplikat, ternyata tidak ada indikasi duplikat pada dataset user.
 
+4. Data Final
+   Setelah dilakukan penggabungan data final, dilakukan juga visualisasi terhadap 10 buku dengan jumlah rating terbanyak untuk memahami pola distribusi rating dalam data.
+
+   ![pengguna-lebih-satu](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/top%2010%20buku.png)
+
+   Berdasarkan gambar di atas, dapat dilihat top 10 buku dengan jumlah rating terbanyak yang diberikan oleh pengguna. Buku `Wild Animus` memiliki jumlah rating terbanyak dari pengguna yaitu sekitar 450.
+
 ## Data Preparation
 
 ### Filter Users yang Memberikan Rating > 150
 
+- Pada tahap ini, dilakukan filter terhadap pengguna yang telah memberikan lebih dari 150 penilaian (rating) terhadap buku.
+- Filtering ini dilakukan untuk memfokuskan pada pengguna yang aktif, sehingga data yang digunakan dalam pelatihan model berasal dari pengguna yang memiliki preferensi yang lebih terdefinisi, serta mengurangi *noise* dari pengguna yang hanya memberi sedikit atau satu penilaian.
+
 ### Menggabungkan Dataset Ratings dan Books
+
+- Dataset `data_ratings` digabungkan dengan `data_books` berdasarkan kolom `ISBN` sebagai key.
+- Tujuan dari penggabungan ini adalah untuk melengkapi data penilaian dengan informasi tambahan seperti judul buku, penulis, penerbit, dan tahun terbit agar sistem rekomendasi dapat memanfaatkan informasi berbasis konten (*Content-Based Filtering*).
 
 ### Perhitungan Jumlah Rating
 
+- Dilakukan agregasi untuk menghitung jumlah rating yang diberikan pada masing-masing buku.
+- Informasi ini berguna untuk mengidentifikasi buku mana yang populer (sering diberi rating) dan juga sebagai dasar untuk memfilter buku dengan jumlah rating terlalu sedikit yang mungkin tidak cukup representatif untuk dianalisis.
+
 ### Membuat Dataset Final
 
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+- Dataset `data_ratings_with_books` digabungkan dengan hasil agregasi jumlah rating (`num_ratings`) berdasarkan `Book-Title`.
+- Dataset difilter agar hanya menyisakan buku yang memiliki minimal 50 rating karena buku dengan sedikit rating cenderung tidak cukup informasi untuk memberikan rekomendasi yang akurat.
+- Duplikat kombinasi `User-ID` dan `Book-Title` dihapus untuk menghindari bias pada pengguna yang memberi rating ganda terhadap satu buku.
+- Setelah proses pembersihan, diperoleh data final yang konsisten dan bebas duplikasi.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+### Penghapusan Duplikasi ISBN
+
+- Ditemukan bahwa satu ISBN bisa terkait dengan lebih dari satu judul buku, sehingga dilakukan penghapusan duplikasi berdasarkan ISBN.
+- Hasil dari proses ini disimpan dalam variabel `preparation` yang digunakan untuk memastikan hanya satu entri unik per ISBN digunakan dalam sistem rekomendasi.
+- Selanjutnya, data seperti `ISBN`, `Book-Title`, `Book-Author`, `Year-Of-Publication`, dan `Publisher` dikonversi menjadi list untuk mempermudah proses pemodelan selanjutnya.
+
+### Data Preparation untuk Content-Based Filtering
+
+1. Persiapan Data dan TF-IDF Vectorizer pada Kolom Book_Author
+   - Dataset disalin ke variabel `data` untuk menjaga data asli tetap utuh.
+   - Menggunakan `TfidfVectorizer` dari scikit-learn untuk mengubah teks penulis buku (`Book_Author`) menjadi representasi vektor numerik berdasarkan frekuensi dan pentingnya kata.
+   - Bertujuan untuk mengekstrak fitur-fitur teks yang bermakna dari kolom penulis buku sehingga model dapat mengenali pola dan ciri khas penulis sebagai dasar perbandingan antar buku.
+   
+2. Membentuk DataFrame TF-IDF
+   - Matriks TF-IDF yang berbentuk sparse matrix diubah ke bentuk dense untuk memudahkan visualisasi.
+   - Membuat DataFrame dengan baris sebagai judul buku (`Book_Title`) dan kolom sebagai fitur nama penulis.
+   - Bertujuan untuk memvisualisasikan representasi fitur numerik dari tiap buku sehingga memudahkan pemahaman distribusi fitur dan mempersiapkan data untuk proses kemiripan antar buku.
+   
+3. Menghitung Kemiripan Antar Buku dengan Cosine Similarity
+   - Menggunakan cosine similarity untuk mengukur tingkat kemiripan antar judul buku berdasarkan representasi TF-IDF penulis.
+   - Hasilnya berupa matriks persegi yang menunjukkan seberapa mirip tiap buku terhadap buku lainnya.
+   - Bertujuan untuk mengukur dan memetakan hubungan kemiripan antar buku berdasarkan fitur konten sehingga sistem dapat merekomendasikan buku dengan karakteristik yang serupa.
+
+### Data Preparation untuk Collaborative Filtering
+
+Data preparation untuk pendekatan Collaborative Filtering dilakukan untuk mengubah data mentah menjadi format numerik yang dapat digunakan dalam pelatihan model *machine learning*. Proses ini melibatkan encoding pengguna dan item (buku) serta normalisasi rating agar model dapat mempelajari pola preferensi pengguna secara efektif.
+
+1. Encoding Kolom `User-ID` dan `ISBN`
+   - Langkah pertama adalah mengubah `User-ID` dan `ISBN` menjadi representasi numerik (integer) menggunakan proses encoding.
+   - `User-ID` dan `ISBN` diubah menjadi indeks integer unik melalui pembuatan dictionary:
+   - `user_to_user_encoded` untuk memetakan ID pengguna ke angka.
+   - `isbn_to_isbn_encoded` untuk memetakan ISBN buku ke angka.
+   - Proses ini penting karena model machine learning biasanya memerlukan input dalam bentuk numerik, bukan string.
+
+2. Mapping ke DataFrame
+   - Setelah melakukan encoding, kolom baru `user` dan `book_title` ditambahkan ke dataframe:
+   - `user` merupakan hasil pemetaan `User-ID` ke angka.
+   - `book_title` merupakan hasil pemetaan `ISBN` ke angka.
+   - Hal ini bertujuan untuk menyiapkan data input dalam format `[user, book]` agar bisa digunakan sebagai pasangan input dalam model rekomendasi.
+
+3. Konversi Tipe dan Statistik Rating
+   - Rating dikonversi ke tipe data `float32` untuk memastikan kompatibilitas dengan model TensorFlow/PyTorch.
+   - Jumlah total pengguna dan buku dihitung untuk mengetahui dimensi input.
+   - Nilai minimum dan maksimum rating diambil untuk digunakan dalam proses normalisasi.
+
+4. Pengacakan Data
+   - Data diacak menggunakan `df.sample(frac=1)` untuk memastikan distribusi rating tidak berpola saat dibagi menjadi data training dan validasi.
+   - Pengacakan penting untuk menghindari bias urutan data saat pelatihan.
+
+5. Pembagian Data: Training dan Validation
+   - Data dibagi ke dalam 80% untuk training dan 20% untuk validation.
+   - Fitur `x` berisi pasangan `[user, book_title]`.
+   - Label `y` merupakan nilai rating yang telah dinormalisasi ke rentang 0-1 menggunakan rumus:
+     
+     $$\text{normalized rating} = \frac{\text{rating} - \text{min rating}}{\text{max rating} - \text{min rating}}$$
+     
+   - Proses normalisasi membantu model belajar lebih stabil karena seluruh label berada dalam skala seragam.
 
 ## Modeling
 
