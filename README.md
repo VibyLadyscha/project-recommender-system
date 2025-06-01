@@ -10,31 +10,33 @@ Dengan meningkatnya kebutuhan akan personalisasi dalam dunia literasi digital, p
 
 ## Business Understanding
 
-Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
-
-Bagian laporan ini mencakup:
+Pengembangan sistem rekomendasi buku memiliki potensi besar dalam meningkatkan pengalaman membaca pengguna, mengurangi beban informasi (*information overload*), dan membantu pembaca menemukan konten yang sesuai dengan preferensi mereka. Dalam era digital dan meningkatnya digitalisasi pustaka, jumlah judul buku yang tersedia terus bertambah, membuat pengguna kerap kesulitan dalam memilih bacaan yang relevan dan menarik minat mereka. Sistem rekomendasi mampu menyaring pilihan berdasarkan data historis dan karakteristik buku, memberikan saran personal yang lebih relevan dan efisien.
 
 ### Problem Statements
 
-Menjelaskan pernyataan masalah:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+Berdasarkan latar belakang tersebut, beberapa masalah yang ingin diselesaikan dalam proyek ini adalah:
+1. Bagaimana membangun sistem rekomendasi buku yang mengintegrasikan pendekatan *Content-Based Filtering* dan *Collaborative Filtering* untuk menghasilkan rekomendasi yang akurat dan relevan?
+2. Algoritma rekomendasi mana yang memberikan performa terbaik dalam memprediksi preferensi pengguna berdasarkan karakteristik buku dan data historis interaksi pengguna?
 
 ### Goals
 
-Menjelaskan tujuan proyek yang menjawab pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
+Tujuan dari proyek ini meliputi:
+1. Mengembangkan sistem rekomendasi buku yang memanfaatkan pendekatan Content-Based Filtering dan Collaborative Filtering untuk memberikan saran bacaan yang personal dan kontekstual.
+2. Membandingkan performa berbagai metode rekomendasi untuk menentukan strategi atau kombinasi algoritma terbaik dalam memaksimalkan relevansi hasil rekomendasi.
 
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
+### Solution statements
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
-
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution approach (algoritma atau pendekatan sistem rekomendasi).
+1. Analisis Data dan Preprocessing
+   - Analisis Eksploratif dilakukan untuk menjelajahi dataset untuk memahami struktur data, distribusi rating, popularitas buku, dan karakteristik pengguna.
+   - Pembersihan Data dilakukan untuk menangani *missing values* dan duplikasi pada dataset.
+   - Encoding Fitur dilakukan untuk mengubah kolom seperti nama penulis dan id pengguna menjadi bentuk numerik menggunakan metode TF-IDF untuk pemrosesan lebih lanjut.
+2. Implementasi Model *Content-Based Filtering*
+   - Ekstraksi Fitur Buku menggunakan informasi seperti judul, penulis, dan deskripsi untuk membentuk representasi konten setiap buku.
+   - TF-IDF Vectorization untuk mengubah teks deskripsi atau metadata buku menjadi representasi vektor menggunakan teknik TF-IDF.
+   - Perhitungan Similaritas menggunakan *cosine similarity* untuk menghitung kesamaan antara buku dan merekomendasikan buku yang serupa dengan yang telah dibaca atau disukai pengguna.
+3. Implementasi Model *Collaborative Filtering*
+   - Pendekatan berbasis *User-Based Filtering* yaitu merekomendasikan buku yang belum dibaca pengguna berdasarkan kesamaan preferensi dengan pengguna lain.
+   - Pendekatan berbasis model Menggunakan teknik seperti *matrix factorization* dengan algoritma seperti *RecommenderNet* untuk menangkap hubungan kompleks antara pengguna dan buku.
 
 ## Data Understanding
 Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
