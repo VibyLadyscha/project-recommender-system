@@ -157,8 +157,6 @@ Pada proyek ini saya menggunakan data sekunder yang diunduh dari situs dataset *
 
 ### Data Preparation untuk Collaborative Filtering
 
-Data preparation untuk pendekatan Collaborative Filtering dilakukan untuk mengubah data mentah menjadi format numerik yang dapat digunakan dalam pelatihan model *machine learning*. Proses ini melibatkan encoding pengguna dan item (buku) serta normalisasi rating agar model dapat mempelajari pola preferensi pengguna secara efektif.
-
 1. Encoding Kolom `User-ID` dan `ISBN`
    - Langkah pertama adalah mengubah `User-ID` dan `ISBN` menjadi representasi numerik (integer) menggunakan proses encoding.
    - `User-ID` dan `ISBN` diubah menjadi indeks integer unik melalui pembuatan dictionary:
