@@ -39,19 +39,77 @@ Tujuan dari proyek ini meliputi:
    - Pendekatan berbasis model Menggunakan teknik seperti *matrix factorization* dengan algoritma seperti *RecommenderNet* untuk menangkap hubungan kompleks antara pengguna dan buku.
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
 
-Selanjutnya, uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
+Pada proyek ini saya menggunakan data sekunder yang diunduh dari situs dataset *online* Kaggle dengan judul “[Book Recommendation Dataset](https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset/data)”. Dataset disimpan dalam file dengan format .CSV yang kemudian akan digunakan dalam proses pengolahan data. Dataset ini terdiri dari 3 file berbeda yaitu Books.csv, Users.csv, dan Ratings.csv dengan kolom yang berbeda juga.
 
-Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+1. Books.csv
+   
+   Variabel yang tersedia:
+   | Variabel             | Deskripsi                                                                                   |
+   |----------------------|---------------------------------------------------------------------------------------------|
+   | ISBN                 | Nomor ISBN unik untuk mengidentifikasi setiap buku. ISBN yang tidak valid telah dihapus.   |
+   | Book-Title           | Judul buku.                                                                                 |
+   | Book-Author          | Nama penulis buku. Jika terdapat beberapa penulis, hanya penulis pertama yang dicantumkan. |
+   | Year-Of-Publication  | Tahun terbit buku.                                                                          |
+   | Publisher            | Nama penerbit buku.                                                                         |
+   | Image-URL-S          | URL ke gambar sampul buku berukuran kecil dari Amazon.                                     |
+   | Image-URL-M          | URL ke gambar sampul buku berukuran sedang dari Amazon.                                    |
+   | Image-URL-L          | URL ke gambar sampul buku berukuran besar dari Amazon.                                     |
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
+   - `data_books` yang memuat file Books.csv memiliki dimensi (271360, 8) yang berarti memiliki baris sebanyak 271.360 data dan kolom sebanyak 8.
+   - Setelah dilakukan pengecekan terhadap kolom yang ada pada `data_books`, kemudian dilakukan penghapusan pada kolom yang tidak relevan yaitu kolom `Image-URL-S`, `Image-URL-M` dan `Image-URL-L`.
+   - Tipe data pada `data_books` merupakan object dengan total kolom setelah penghapusan sebanyak 5 kolom.
+   - Setelah dilakukan pengecekan *missing value*, ternyata terdapat beberapa *missing value* pada kolom `Book-Author` dan `Publisher` sehingga perlu dilakukan penanganan pada tahap praproses data.
+   - Setelah dilakukan pengecekan duplikat, ternyata tidak ada indikasi duplikat pada dataset buku.
+   - Dilakukan pengecekan terhadap top 10 penulis dengan buku terbanyak
+
+     ![top-10-penulis](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/top%2010%20penulis.png)
+
+     Berdasarkan gambar di atas, dapat dilihat top 10 penulis dengan jumlah buku terbanyak. Penulis `Agatha Christie` memiliki jumlah buku terbanyak yaitu sekitar 600 buku.
+   
+2. Ratings.csv
+
+   Variabel yang tersedia:
+   | Variabel     | Deskripsi                                                                                                    |
+   |--------------|--------------------------------------------------------------------------------------------------------------|
+   | User-ID      | ID unik untuk setiap pengguna yang memberikan penilaian terhadap buku.                                       |
+   | ISBN         | Nomor ISBN dari buku yang diberi penilaian.                                                                 |
+   | Book-Rating  | Nilai rating buku. Nilai eksplisit berkisar dari 1 hingga 10 (semakin tinggi berarti semakin disukai), sedangkan nilai 0 menunjukkan penilaian implisit (misalnya hanya melihat atau mengakses tanpa memberi rating).    |
+
+   - `data_ratings` yang memuat file Ratings.csv memiliki dimensi (1149780, 3) yang berarti memiliki baris sebanyak 1.149.780 data dan kolom sebanyak 3.
+   - Tipe data pada `data_ratings` merupakan int64 dan object dengan total 3 kolom.
+   - Setelah dilakukan pengecekan *missing values*, ternyata tidak ada indikasi *missing values* pada dataset rating.
+   - Setelah dilakukan pengecekan duplikat, ternyata tidak ada indikasi duplikat pada dataset rating.
+   - Dilakukan pengecekan terkait pengguna yang memberikan rating terhadap buku lebih dari satu kali.
+
+     ![pengguna-lebih-satu](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/Screenshot%202025-06-01%20193918.png)
+
+     Dapat dilihat bahwa terdapat 105.283 pengguna yang memberikan rating terhadap buku lebih dari satu kali.
+
+3. Users.csv
+
+   Variabel yang tersedia:
+   | Variabel  | Deskripsi                                                                                                   |
+   |-----------|-------------------------------------------------------------------------------------------------------------|
+   | User-ID   | ID pengguna yang telah dianonimkan dan direpresentasikan sebagai bilangan bulat.                           |
+   | Location  | Lokasi geografis pengguna (biasanya dalam format "kota, negara bagian, negara").                           |
+   | Age       | Usia pengguna. Jika data tidak tersedia, nilai ini akan berisi NULL (kosong).                             |
+
+   - `data_users` yang memuat file Users.csv memiliki dimensi (278858, 3) yang berarti memiliki baris sebanyak 278.858 data dan kolom sebanyak 3.
+   - Tipe data pada `data_users` merupakan int64, float64, dan object dengan total 3 kolom.
+   - Setelah dilakukan pengecekan *missing values*, ternyata tidak ada indikasi *missing values* pada dataset user.
+   - Setelah dilakukan pengecekan duplikat, ternyata tidak ada indikasi duplikat pada dataset user.
 
 ## Data Preparation
+
+### Filter Users yang Memberikan Rating > 150
+
+### Menggabungkan Dataset Ratings dan Books
+
+### Perhitungan Jumlah Rating
+
+### Membuat Dataset Final
+
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
@@ -156,6 +214,15 @@ Berdasarkan hasil evaluasi pada model *Content-Based Filtering*, diperoleh nilai
 ### Collaborative Filtering
 
 Model *Collaborative Filltering* menggunakan metrik RMSE (*Root Mean Square Error*) untuk mengevaluasi kinerja model yang dihasilkan. RMSE merupakan salah satu metode yang paling umum digunakan untuk mengukur kesalahan dalam model prediktif, khususnya ketika berurusan dengan data kuantitatif. Dengan menggunakan RMSE, dapat secara efektif menilai seberapa baik model dalam memprediksi nilai-nilai yang diharapkan berdasarkan data yang telah diamati sebelumnya. RMSE dapat dihitung dengan rumus berikut:
+
+$$\text{RMSE} = \sqrt{ \frac{1}{n} \sum_{i=1}^{n} (\hat{y}_i - y_i)^2 }$$
+
+Keterangan :
+- RMSE = nilai *Root Mean Square Error*
+- y = nilai hasil observasi
+- ŷ = nilai hasil prediksi
+- i = urutan data
+- n = jumlah data
 
 #### Interpretasi Hasil
 
