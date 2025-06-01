@@ -21,7 +21,7 @@ Berdasarkan latar belakang tersebut, beberapa masalah yang ingin diselesaikan da
 ### Goals
 
 Tujuan dari proyek ini meliputi:
-1. Mengembangkan sistem rekomendasi buku yang memanfaatkan pendekatan Content-Based Filtering dan Collaborative Filtering untuk memberikan saran bacaan yang personal dan kontekstual.
+1. Mengembangkan sistem rekomendasi buku yang memanfaatkan pendekatan *Content-Based Filtering* dan *Collaborative Filtering* untuk memberikan saran bacaan yang personal dan kontekstual.
 2. Membandingkan performa berbagai metode rekomendasi untuk menentukan strategi atau kombinasi algoritma terbaik dalam memaksimalkan relevansi hasil rekomendasi.
 
 ### Solution statements
@@ -66,14 +66,44 @@ Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk meny
 - Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
 
 ## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+Pada proyek ini, terdapat dua evaluasi dari *Content-Based Filltering* dan *Collaborative Filltering*, berikut merupakan penjelasannya:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+### Content-Based Filtering
 
-**---Ini adalah bagian akhir laporan---**
+Evaluasi model *Content-Based Filtering* dilakukan menggunakan tiga metrik utama yaitu *Precision*, *Recall*, dan *F1-Score*. Ketiga metrik ini secara umum digunakan untuk mengukur kinerja sistem rekomendasi.
+
+*Precision* adalah bagian dari hasil positif yang diprediksi dengan benar. Metrik ini menunjukkan seberapa *confident* suatu model dalam memprediksi kelas positif sebagai positif. *Precision* dapat dihitung dengan rumus:
+
+$$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}\%$$
+
+Sedangkan, *recall* adalah metrik yang mengukur seberapa akurat suatu model memprediksi hasil positif. *Recall* dapat dihitung dengan rumus:
+
+$$\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}\%$$
+
+*F1-Score* didapatkan dari rata-rata harmonis dari *precision* dan *recall*. Rata-rata harmonis ini tidak hanya memperhatikan nilai prediksi yang benar, tetapi juga memperhatikan nilai prediksi yang salah. Metrik *F1-Score* dapat dihitung dengan rumus:
+
+$$\text{F1 Score} = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+
+Sebelum ketiga metrik tersebut dihitung, diperlukan data label aktual atau *ground truth* yang menjadi acuan dalam mengevaluasi prediksi model. Dalam konteks proyek ini, *ground truth* dibentuk berdasarkan hasil *cosine similarity* antar item, di mana setiap baris dan kolom pada matriks mewakili judul buku dan nilai pada setiap sel menunjukkan tingkat kemiripan. Nilai 1 diberikan jika dua item dianggap mirip dan 0 jika tidak mirip. Oleh karena itu, penetapan *threshold* menjadi penting untuk menentukan kapan dua item dinyatakan mirip atau tidak dalam proses evaluasi.
+
+#### Interpretasi Hasil
+
+![evaluasi-cbf](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/Screenshot%202025-06-01%20172116.png)
+
+Berdasarkan hasil evaluasi pada model *Content-Based Filtering*, diperoleh nilai yang sangat tinggi untuk ketiga metrik evaluasi, yaitu *precision*, *recall*, dan *F1-Score*. *Precision* memiliki nilai 1.0, yang menunjukkan bahwa semua prediksi positif yang dihasilkan model benar adanya, tanpa adanya kesalahan klasifikasi positif (*false positive*). *Recall* juga mencapai nilai 1.0, yang berarti model mampu mengenali seluruh item relevan secara sempurna. *F1-Score* yang juga berada di angka 1.0 mencerminkan bahwa model memiliki keseimbangan yang optimal antara *precision* dan *recall*. Dengan demikian, dapat disimpulkan bahwa model mampu memberikan rekomendasi dengan performa yang sangat baik menggunakan pendekatan *Content-Based Filtering*.
+
+
+### Collaborative Filtering
+
+Model *Collaborative Filltering* menggunakan metrik RMSE (*Root Mean Square Error*) untuk mengevaluasi kinerja model yang dihasilkan. RMSE merupakan salah satu metode yang paling umum digunakan untuk mengukur kesalahan dalam model prediktif, khususnya ketika berurusan dengan data kuantitatif. Dengan menggunakan RMSE, dapat secara efektif menilai seberapa baik model dalam memprediksi nilai-nilai yang diharapkan berdasarkan data yang telah diamati sebelumnya. RMSE dapat dihitung dengan rumus berikut:
+
+
+#### Interpretasi Hasil
+
+![evaluasi-cf](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/collaborative%20filtering_rmse.png)
+
+Setelah melakukan pelatihan model *Collaborative Filtering*, dapat dilihat bahwa plot metrik RMSE yang menunjukkan kinerja model dalam bentuk grafik. Dari plot tersebut, model menghasilkan nilai RMSE sebesar 0.2915 pada train dan 0.3136 pada validation. Angka ini menunjukkan bahwa kinerja model sudah cukup baik karena nilai RMSE yang lebih rendah menunjukkan kesalahan yang lebih kecil dalam prediksi.
 
 ## References
 [1] X. Su and T. M. Khoshgoftaar, "A survey of collaborative filtering techniques," Advances in Artificial Intelligence, vol. 2009, Article ID 421425, 2009.
