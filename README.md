@@ -2,13 +2,11 @@
 
 ## Project Overview
 
-Pada bagian ini, Kamu perlu menuliskan latar belakang yang relevan dengan proyek yang diangkat.
+Seiring dengan pesatnya pertumbuhan dunia penerbitan dan digitalisasi buku, pengguna dihadapkan pada tantangan memilih bacaan yang relevan dari ribuan bahkan jutaan judul yang tersedia. Kondisi ini dapat menyebabkan kelelahan dalam mengambil keputusan dan berkurangnya minat membaca karena kesulitan menemukan buku yang sesuai. Oleh karena itu, dibutuhkan sistem yang mampu secara otomatis menyaring dan merekomendasikan buku berdasarkan preferensi masing-masing pengguna. Sistem rekomendasi berperan penting dalam mengatasi permasalahan ini dengan menganalisis pola interaksi pengguna dan fitur konten dari buku.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
-- Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas.
-- Format Referensi dapat mengacu pada penulisan sitasi [IEEE](https://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE_Reference_Guide.pdf), [APA](https://www.mendeley.com/guides/apa-citation-guide/) atau secara umum seperti [di sini](https://penerbitdeepublish.com/menulis-buku-membuat-sitasi-dengan-mudah/)
-- Sumber yang bisa digunakan [Scholar](https://scholar.google.com/)
+Dua pendekatan utama dalam pengembangan sistem ini adalah Content-Based Filtering yang memanfaatkan kesamaan fitur buku seperti pengarang dan genre, serta Collaborative Filtering, yang mengidentifikasi pola pengguna lain dengan preferensi serupa [[1](https://onlinelibrary.wiley.com/doi/10.1155/2009/421425)]. Penggabungan kedua pendekatan melalui metode hybrid telah terbukti meningkatkan relevansi rekomendasi [[2](https://www.researchgate.net/publication/383320649_Personalized_Book_Recommendations_A_Hybrid_Approach_Leveraging_Collaborative_Filtering_Association_Rule_Mining_and_Content-Based_Filtering)]. Lebih lanjut, penerapan metode machine learning seperti Neural Collaborative Filtering juga menunjukkan hasil signifikan dalam meningkatkan akurasi prediksi rating pengguna [[3](https://arxiv.org/abs/1708.05031)].
+
+Dengan meningkatnya kebutuhan akan personalisasi dalam dunia literasi digital, pengembangan sistem rekomendasi buku yang andal dan cerdas menjadi penting, tidak hanya dalam meningkatkan pengalaman pengguna, tetapi juga sebagai bagian dari solusi teknologi dalam pengelolaan informasi skala besar.
 
 ## Business Understanding
 
@@ -74,6 +72,13 @@ Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, probl
 - Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
 
 **---Ini adalah bagian akhir laporan---**
+
+## References
+[1] X. Su and T. M. Khoshgoftaar, "A survey of collaborative filtering techniques," Advances in Artificial Intelligence, vol. 2009, Article ID 421425, 2009.
+
+[2] R. H. Goudar, D. Gm, and R. B. Kaliwal, "Personalized Book Recommendations: A Hybrid Approach Leveraging Collaborative Filtering, Association Rule Mining, and Content-Based Filtering," EAI Endorsed Transactions on Internet of Things, vol. 10, Aug. 2024.
+
+[3] X. He et al., "Neural collaborative filtering," in Proc. 26th Int. Conf. on World Wide Web (WWW), 2017, pp. 173–182. 
 
 _Catatan:_
 - _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
