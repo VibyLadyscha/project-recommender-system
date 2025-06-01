@@ -101,6 +101,7 @@ Pada proyek ini saya menggunakan data sekunder yang diunduh dari situs dataset *
    - Setelah dilakukan pengecekan duplikat, ternyata tidak ada indikasi duplikat pada dataset user.
 
 4. Data Final
+   
    Setelah dilakukan penggabungan data final, dilakukan juga visualisasi terhadap 10 buku dengan jumlah rating terbanyak untuk memahami pola distribusi rating dalam data.
 
    ![pengguna-lebih-satu](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/top%2010%20buku.png)
