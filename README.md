@@ -206,11 +206,11 @@ Top 5 Rekomendasi Buku
 
 | No | Book_Title                                              | Book_Author   |
 |----|---------------------------------------------------------|---------------|
-| 0  | Inner Harbor (Quinn Brothers (Paperback))               | Nora Roberts  |
-| 1  | Carolina Moon                                           | Nora Roberts  |
-| 4  | Midnight Bayou                                          | Nora Roberts  |
-| 7  | Three Fates                                             | Nora Roberts  |
-| 12 | Dance upon the Air (Three Sisters Island Trilogy)       | Nora Roberts  |
+| 1  | Inner Harbor (Quinn Brothers (Paperback))               | Nora Roberts  |
+| 2  | Carolina Moon                                           | Nora Roberts  |
+| 3  | Midnight Bayou                                          | Nora Roberts  |
+| 4  | Three Fates                                             | Nora Roberts  |
+| 5 | Dance upon the Air (Three Sisters Island Trilogy)       | Nora Roberts  |
 
 Berdasarkan output di atas, sistem berhasil merekomendasikan 5 judul buku teratas dengan kategori nama penulis buku (Nora Roberts) yang sama seperti penulis pada judul buku yang diinput.
 
