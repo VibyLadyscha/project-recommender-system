@@ -27,7 +27,7 @@ Tujuan dari proyek ini meliputi:
 ### Solution statements
 
 1. Analisis Data dan Preprocessing
-   - Analisis Eksploratif dilakukan untuk menjelajahi dataset untuk memahami struktur data, distribusi rating, popularitas buku, dan karakteristik pengguna.
+   - Analisis Eksploratif dilakukan untuk menjelajahi dataset untuk memahami struktur data, kontribusi penulis, dan popularitas buku.
    - Pembersihan Data dilakukan untuk menangani *missing values* dan duplikasi pada dataset.
    - Encoding Fitur dilakukan untuk mengubah kolom seperti nama penulis dan id pengguna menjadi bentuk numerik menggunakan metode TF-IDF untuk pemrosesan lebih lanjut.
 2. Implementasi Model *Content-Based Filtering*
@@ -59,11 +59,71 @@ Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dil
 - Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+### Content-Based Filtering
+
+Algoritma *Content-Based Filtering* yang digunakan dalam proyek ini bekerja dengan membandingkan kesamaan antar buku berdasarkan fitur `Book_Author` yang telah diubah menjadi representasi numerik. Langkah pertama adalah menghitung *Cosine Similarity* antar buku dengan menggunakan matriks fitur dari data training. Selanjutnya, fungsi `book_recommendation` digunakan untuk mencari buku yang paling mirip dengan buku yang diberikan sebagai input `Book_Title`. Fungsi ini mengidentifikasi indeks buku yang sesuai dengan judul yang dimasukkan, menghitung skor kesamaan dengan semua buku lainnya, dan menyusun daftar buku yang paling mirip berdasarkan skor tersebut.
+
+Algoritma *Content-Based Filtering* dimulai dengan mengekstrak fitur `Book_Author` yang diubah menjadi representasi numerik menggunakan teknik seperti *CountVectorizer* atau TF-IDF. Fitur ini kemudian digunakan dalam membentuk matriks fitur di mana setiap baris mewakili satu buku sementara setiap kolom mewakili nama penulis yang menjadi dasar untuk menghitung kesamaan antar buku. Kesamaan dihitung dengan menggunakan `Cosine Similarity` yang mengukur sudut antara dua vektor dengan nilai berkisar antara 0 (tidak ada kesamaan) hingga 1 (identik). Setelah itu, algoritma mencari indeks buku sesuai dengan judul yang diberikan agar dapat mengakses skor kesamaan buku tersebut dengan buku lainnya, kemudian diurutkan secara menurun untuk menemukan buku paling relevan. Selanjutnya, algoritma memilih sejumlah buku teratas untuk direkomendasikan, mengambil data tambahan seperti `Book_Title` dan `Book_Author`. Hasil rekomendasi akhirnya disusun dalam bentuk tabel atau DataFrame. Dengan demikian, algoritma ini mampu memberikan rekomendasi buku yang relevan berdasarkan atribut yang mirip dengan buku input.
+
+Kelebihan dari pendekatan ini adalah sistem dapat memberikan rekomendasi berdasarkan atribut yang relevan dengan buku yang disukai pengguna, tanpa memerlukan data interaksi dari pengguna lain. Ini memungkinkan sistem untuk bekerja bahkan untuk pengguna baru yang belum memberikan interaksi. Selain itu, *Content-Based Filtering* memberikan rekomendasi yang lebih personal karena didasarkan pada kesamaan fitur dari buku itu sendiri. Namun, kekurangannya adalah pendekatan ini hanya mengandalkan atribut yang ada, sehingga dapat menghasilkan rekomendasi yang terbatas atau kurang variatif, terutama jika buku yang memiliki kesamaan fitur terbatas. Selain itu, *Content-Based Filtering* sering kali mengalami masalah ketika ada buku dengan penulis yang tidak mencolok sehingga mengurangi kualitas rekomendasi.
+
+#### Hasil Rekomendasi Buku
+
+Rekomendasi telah berhasil dibuat untuk pengguna dengan judul buku input `Sea Swept (Quinn Brothers (Paperback))`.
+
+Top 5 Rekomendasi Buku
+
+| No | Book_Title                                              | Book_Author   |
+|----|---------------------------------------------------------|---------------|
+| 0  | Inner Harbor (Quinn Brothers (Paperback))               | Nora Roberts  |
+| 1  | Carolina Moon                                           | Nora Roberts  |
+| 4  | Midnight Bayou                                          | Nora Roberts  |
+| 7  | Three Fates                                             | Nora Roberts  |
+| 12 | Dance upon the Air (Three Sisters Island Trilogy)       | Nora Roberts  |
+
+Berdasarkan output di atas, sistem berhasil merekomendasikan 5 judul buku teratas dengan kategori nama penulis buku (Nora Roberts) yang sama seperti penulis pada judul buku yang diinput.
+
+### Collaborative Filtering
+
+*Collaborative Filtering* merupakan metode rekomendasi yang bekerja dengan menganalisis pola interaksi antara pengguna dan item (buku), untuk memberikan rekomendasi yang sesuai dengan preferensi pengguna. Pada proyek ini, langkah awal adalah melakukan encoding terhadap User-ID dan ISBN, sehingga setiap pengguna dan buku direpresentasikan dalam bentuk angka unik. Selanjutnya, data dibagi menjadi dua set yaitu data training (80%) dan data validation (20%). Model yang digunakan yaitu `RecommenderNet`, dirancang dengan pendekatan embedding yang memetakan setiap pengguna dan buku ke dalam ruang vektor berdimensi tertentu yang ditentukan oleh parameter embedding_size. Embedding ini merepresentasikan karakteristik pengguna dan buku dalam bentuk vektor numerik. Model memiliki empat komponen utama yaitu embedding untuk pengguna `user_embedding` dan buku `book_title_embedding`, serta bias untuk pengguna `user_bias` dan buku `book_title_bias`. Dalam proses prediksi, model menghitung produk titik (*dot product*) antara vektor pengguna dan buku, kemudian menambahkan bias untuk mendapatkan nilai prediksi rating. Nilai ini dihitung menggunakan fungsi aktivasi sigmoid, yang menghasilkan output dalam rentang 0 hingga 1. Model dilatih menggunakan algoritma optimasi Adam dengan *learning_rate* sebesar 0.0001, dan fungsi loss yang digunakan adalah *Binary Crossentropy* untuk meminimalkan kesalahan prediksi. Selama pelatihan, performa model dievaluasi menggunakan metrik *Root Mean Squared Error* (RMSE) yang mengukur seberapa baik model memprediksi rating.
+
+Parameter yang digunakan dalam algoritma *Collaborative Filtering* pada proyek ini diantaranya:
+1. Jumlah Pengguna `num_users` merujuk pada total pengguna unik dari proses encoding kolom User-ID yang menentukan dimensi untuk embedding pengguna.
+2. Jumlah Buku `num_book_title` adalah total buku unik dari encoding kolom ISBN yang menentukan dimensi untuk embedding buku.
+3. Ukuran Embedding `embedding_size` ditetapkan pada 50 yang mewakili pengguna dan buku dalam vektor berdimensi 50.
+4. Tingkat Pembelajaran `learning_rate` diatur pada 0.0001 akan mempengaruhi kecepatan pembaruan bobot model.
+5. Fungsi Kehilangan `loss` menggunakan *Binary Crossentropy* untuk menghitung kesalahan antara rating prediksi dan aktual.
+6. Metrik Evaluasi `metrics` menggunakan *Root Mean Squared Error* (RMSE) untuk menilai performa model.
+7. Ukuran Batch `batch_size` ditetapkan pada 128 untuk memastikan efisiensi pelatihan pada dataset.
+8. Jumlah Epoch `epochs` adalah 50, cukup untuk belajar tanpa overfitting.
+9. Regularisasi `embeddings_regularizer` menggunakan L2 dengan nilai penalti 1×10^-6 untuk mengurangi risiko overfitting.
+10. Fungsi Aktivasi `tf.nn.sigmoid` membatasi prediksi antara 0 dan 1 untuk menghasilkan probabilitas.
+
+Semua parameter bekerja sama untuk mengoptimalkan pelatihan dan menghasilkan rekomendasi yang akurat berdasarkan interaksi antara pengguna dan buku.
+
+Kelebihan dari pendekatan *Collaborative Filtering* ini adalah model dapat memberikan rekomendasi yang sangat personal dengan memanfaatkan data interaksi pengguna tanpa membutuhkan informasi tambahan tentang buku, seperti penerbit atau deskripsi buku. Pendekatan ini juga mampu menangani masalah *sparsity* (kurangnya data) dengan mengandalkan kesamaan antar pengguna atau buku. Namun, ada beberapa kekurangan seperti masalah *cold start*, di mana model kesulitan memberikan rekomendasi untuk pengguna atau buku baru yang tidak memiliki cukup interaksi sebelumnya. Selain itu, *Collaborative Filtering* juga rentan terhadap masalah skala besar, di mana model mungkin membutuhkan waktu dan sumber daya yang banyak untuk memproses data dengan jutaan pengguna dan film.
+
+#### Hasil Rekomendasi Buku
+
+Rekomendasi telah berhasil dibuat untuk pengguna dengan id 228998.
+
+![rekomendasi-cf](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/Screenshot%202025-06-01%20184236.png)
+
+Top 10 Rekomendasi Buku
+
+| No | Book Title                                                  | Book Author      |
+|----|-------------------------------------------------------------|------------------|
+| 1  | The Hobbit : The Enchanting Prelude to The Lord of the Rings | J.R.R. TOLKIEN   |
+| 2  | Charlotte's Web (Trophy Newbery)                            | E. B. White      |
+| 3  | To Kill a Mockingbird                                       | Harper Lee       |
+| 4  | Harry Potter and the Chamber of Secrets (Book 2)            | J. K. Rowling    |
+| 5  | Harry Potter and the Prisoner of Azkaban (Book 3)           | J. K. Rowling    |
+| 6  | Harry Potter and the Goblet of Fire (Book 4)                | J. K. Rowling    |
+| 7  | Harry Potter and the Sorcerer's Stone (Book 1)              | J. K. Rowling    |
+| 8  | Insomnia                                                    | Stephen King     |
+| 9  | Seven Up (A Stephanie Plum Novel)                           | Janet Evanovich  |
+| 10 | Fingersmith                                                 | Sarah Waters     |
 
 ## Evaluation
 
@@ -93,11 +153,9 @@ Sebelum ketiga metrik tersebut dihitung, diperlukan data label aktual atau *grou
 
 Berdasarkan hasil evaluasi pada model *Content-Based Filtering*, diperoleh nilai yang sangat tinggi untuk ketiga metrik evaluasi, yaitu *precision*, *recall*, dan *F1-Score*. *Precision* memiliki nilai 1.0, yang menunjukkan bahwa semua prediksi positif yang dihasilkan model benar adanya, tanpa adanya kesalahan klasifikasi positif (*false positive*). *Recall* juga mencapai nilai 1.0, yang berarti model mampu mengenali seluruh item relevan secara sempurna. *F1-Score* yang juga berada di angka 1.0 mencerminkan bahwa model memiliki keseimbangan yang optimal antara *precision* dan *recall*. Dengan demikian, dapat disimpulkan bahwa model mampu memberikan rekomendasi dengan performa yang sangat baik menggunakan pendekatan *Content-Based Filtering*.
 
-
 ### Collaborative Filtering
 
 Model *Collaborative Filltering* menggunakan metrik RMSE (*Root Mean Square Error*) untuk mengevaluasi kinerja model yang dihasilkan. RMSE merupakan salah satu metode yang paling umum digunakan untuk mengukur kesalahan dalam model prediktif, khususnya ketika berurusan dengan data kuantitatif. Dengan menggunakan RMSE, dapat secara efektif menilai seberapa baik model dalam memprediksi nilai-nilai yang diharapkan berdasarkan data yang telah diamati sebelumnya. RMSE dapat dihitung dengan rumus berikut:
-
 
 #### Interpretasi Hasil
 
@@ -111,7 +169,3 @@ Setelah melakukan pelatihan model *Collaborative Filtering*, dapat dilihat bahwa
 [2] R. H. Goudar, D. Gm, and R. B. Kaliwal, "Personalized Book Recommendations: A Hybrid Approach Leveraging Collaborative Filtering, Association Rule Mining, and Content-Based Filtering," EAI Endorsed Transactions on Internet of Things, vol. 10, Aug. 2024.
 
 [3] X. He et al., "Neural collaborative filtering," in Proc. 26th Int. Conf. on World Wide Web (WWW), 2017, pp. 173–182. 
-
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
