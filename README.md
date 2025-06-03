@@ -97,7 +97,7 @@ Pada proyek ini saya menggunakan data sekunder yang diunduh dari situs dataset *
 
    - `data_users` yang memuat file Users.csv memiliki dimensi (278858, 3) yang berarti memiliki baris sebanyak 278.858 data dan kolom sebanyak 3.
    - Tipe data pada `data_users` merupakan int64, float64, dan object dengan total 3 kolom.
-   - Setelah dilakukan pengecekan *missing values*, ternyata tidak ada indikasi *missing values* pada dataset user.
+   - Setelah dilakukan pengecekan *missing values*, ternyata terdapat beberapa *missing value* pada kolom `Age` sehingga perlu dilakukan penanganan pada tahap praproses data.
    - Setelah dilakukan pengecekan duplikat, ternyata tidak ada indikasi duplikat pada dataset user.
 
 4. Data Final
@@ -109,6 +109,11 @@ Pada proyek ini saya menggunakan data sekunder yang diunduh dari situs dataset *
    Berdasarkan gambar di atas, dapat dilihat top 10 buku dengan jumlah rating terbanyak yang diberikan oleh pengguna. Buku `Wild Animus` memiliki jumlah rating terbanyak dari pengguna yaitu sekitar 450.
 
 ## Data Preparation
+
+### Penghapusan Kolom yang Tidak Relevan
+
+- Pada tahap ini, dilakukan penghapusan pada kolom yang tidak relevan pada `data_books` yaitu kolom `Image-URL-S`, `Image-URL-M` dan `Image-URL-L`.
+- Tujuan penghapusan kolom adalah untuk mengurangi dimensi data dan menghindari informasi yang tidak relevan (*noise*) sehingga proses komputasi menjadi lebih efisien dan performa model rekomendasi tidak terganggu.
 
 ### Filter Users yang Memberikan Rating > 150
 
@@ -149,11 +154,6 @@ Pada proyek ini saya menggunakan data sekunder yang diunduh dari situs dataset *
    - Matriks TF-IDF yang berbentuk sparse matrix diubah ke bentuk dense untuk memudahkan visualisasi.
    - Membuat DataFrame dengan baris sebagai judul buku (`Book_Title`) dan kolom sebagai fitur nama penulis.
    - Bertujuan untuk memvisualisasikan representasi fitur numerik dari tiap buku sehingga memudahkan pemahaman distribusi fitur dan mempersiapkan data untuk proses kemiripan antar buku.
-   
-3. Menghitung Kemiripan Antar Buku dengan Cosine Similarity
-   - Menggunakan cosine similarity untuk mengukur tingkat kemiripan antar judul buku berdasarkan representasi TF-IDF penulis.
-   - Hasilnya berupa matriks persegi yang menunjukkan seberapa mirip tiap buku terhadap buku lainnya.
-   - Bertujuan untuk mengukur dan memetakan hubungan kemiripan antar buku berdasarkan fitur konten sehingga sistem dapat merekomendasikan buku dengan karakteristik yang serupa.
 
 ### Data Preparation untuk Collaborative Filtering
 
@@ -301,6 +301,12 @@ Keterangan :
 ![evaluasi-cf](https://raw.githubusercontent.com/VibyLadyscha/project-recommender-system/main/img/collaborative%20filtering_rmse.png)
 
 Setelah melakukan pelatihan model *Collaborative Filtering*, dapat dilihat bahwa plot metrik RMSE yang menunjukkan kinerja model dalam bentuk grafik. Dari plot tersebut, model menghasilkan nilai RMSE sebesar 0.2915 pada train dan 0.3136 pada validation. Angka ini menunjukkan bahwa kinerja model sudah cukup baik karena nilai RMSE yang lebih rendah menunjukkan kesalahan yang lebih kecil dalam prediksi.
+
+## Summary
+
+Hasil dari proyek ini menunjukkan bahwa pendekatan *Content-Based Filtering* dan *Collaborative Filtering* yang diimplementasikan telah memberikan kontribusi signifikan terhadap pemenuhan tujuan bisnis yang telah ditetapkan. Evaluasi performa model menunjukkan bahwa sistem mampu memberikan rekomendasi yang akurat, relevan, dan sesuai dengan kebutuhan pengguna. Sistem rekomendasi telah berhasil dikembangkan dengan dua pendekatan utama yaitu *Content-Based Filtering* dan *Collaborative Filtering*. Masing-masing pendekatan memberikan hasil rekomendasi yang personal dan kontekstual, sesuai dengan karakteristik pengguna maupun fitur buku, sehingga mencerminkan integrasi metode yang efektif. Evaluasi model menunjukkan bahwa pada *Content-Based Filtering* memberikan hasil sempurna pada metrik *Precision*, *Recall*, dan *F1-Score* yang semuanya bernilai 1.0, menandakan akurasi sangat tinggi dalam memberikan rekomendasi berdasarkan kesamaan konten. Sedangkan pada *Collaborative Filtering* menunjukkan kinerja yang baik dengan nilai RMSE yang rendah yaitu 0.2915 pada *train* dan 0.3136 pada *validation*, menandakan kesalahan prediksi yang kecil dalam mempelajari preferensi pengguna. Hal ini menunjukkan bahwa kedua algoritma memiliki keunggulan masing-masing tergantung pada konteks pengguna dan ketersediaan data. Sistem berhasil memberikan rekomendasi berdasarkan penulis (*Content-Based Filtering*) dan berdasarkan pola interaksi pengguna (*Collaborative Filtering*) yang menghasilkan saran bacaan yang personal dan sesuai preferensi masing-masing pengguna. Evaluasi komprehensif telah dilakukan menggunakan metrik yang sesuai yaitu *Precision*, *Recall*, dan *F1-Score* untuk *Content-Based Filtering* dan RMSE untuk *Collaborative Filtering* yang memungkinkan perbandingan objektif dan pemahaman yang jelas terhadap kekuatan dan keterbatasan masing-masing pendekatan. 
+
+Melalui pendekatan *Content-Based Filtering*, sistem mampu memberikan rekomendasi berdasarkan kemiripan penulis dengan memanfaatkan teknik TF-IDF dan *cosine similarity*, yang terbukti sangat efektif terutama dalam kondisi minim interaksi pengguna. Evaluasi menggunakan metrik *Precision*, *Recall*, dan *F1-Score* menunjukkan performa sempurna yang mengindikasikan bahwa model mampu mengenali dan merekomendasikan buku yang relevan secara konsisten. Sementara itu, pendekatan *Collaborative Filtering* melalui model *RecommenderNet* mampu memetakan preferensi pengguna dan buku secara mendalam dengan bantuan embedding. Evaluasi menggunakan RMSE menghasilkan nilai yang rendah yang menunjukkan kemampuan model dalam memberikan saran bacaan yang akurat dan personal berdasarkan interaksi pengguna sebelumnya. Seluruh solusi yang direncanakan—dari analisis eksploratif, pembersihan data, hingga transformasi fitur dan pemilihan algoritma telah terbukti berdampak langsung terhadap peningkatan kualitas rekomendasi. Secara keseluruhan, seluruh solusi yang direncanakan telah berhasil diimplementasikan dengan baik dan memberikan dampak signifikan terhadap performa sistem, baik dari sisi teknis maupun pemenuhan kebutuhan bisnis. Proyek ini menunjukkan bahwa kombinasi pendekatan *Content-Based Filtering* dan *Collaborative Filtering* dapat menjadi strategi efektif dalam membangun sistem rekomendasi buku yang unggul dan bermanfaat secara praktis bagi pengguna.
 
 ## References
 [1] X. Su and T. M. Khoshgoftaar, "A survey of collaborative filtering techniques," Advances in Artificial Intelligence, vol. 2009, Article ID 421425, 2009.
